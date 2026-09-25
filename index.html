@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>PRECISION ENGINE</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{--a:#ff4b00;--a2:#ff9d00;--bg:#100703;--card:#160a05;--line:#ff4b00;--yellow:#ffd21a}
+*{scrollbar-width:none}::-webkit-scrollbar{display:none}
+body{margin:0;background:#000;color:#fff;font-family:Arial,Tahoma,sans-serif}
+.app{width:min(100%,580px);min-height:100vh;margin:auto;background:linear-gradient(#170804,#090402);padding:0 14px 35px}
+body.app-mode{--a:#8f39ff;--a2:#bc6cff;--bg:#0e0615;--card:#170a20;--line:#9b3cff}
+.top{height:72px;background:var(--a);margin:0 -14px 0;padding:0 18px;display:flex;align-items:center;justify-content:space-between}
+.top b{font-size:18px;letter-spacing:1px}.top small{font-size:10px;display:block;margin-top:3px}
+.pill{border:1px solid #fff;border-radius:20px;padding:7px 10px;font-size:11px;background:#0004}
+.hero{text-align:center;padding:25px 0 17px}
+.gauge{width:185px;height:185px;margin:auto;border-radius:50%;position:relative;display:grid;place-items:center;border:2px solid var(--a);background:radial-gradient(circle,#160904 0 58%,transparent 59%),conic-gradient(var(--a) var(--deg,0deg),#2b150c var(--deg,0deg));box-shadow:0 0 38px color-mix(in srgb,var(--a) 45%,transparent)}
+.gauge:before{content:"";position:absolute;inset:28px;border:2px dashed color-mix(in srgb,var(--a) 55%,transparent);border-radius:50%}
+.gauge:after{content:"";position:absolute;bottom:50%;left:50%;width:4px;height:75px;background:linear-gradient(var(--yellow),transparent);transform:translateX(-50%) rotate(var(--needle,0deg));transform-origin:bottom;filter:drop-shadow(0 0 6px var(--yellow))}
+.gval{z-index:2;font-size:38px;font-weight:900;transform:rotate(180deg)}
+.glabel{position:absolute;bottom:30px;font-size:9px;color:#aaa}
+.hero h1{font-size:23px;margin:20px 0 5px;letter-spacing:1px}.hero p{margin:0;color:#c2aebf;font-size:13px}
+.card{background:linear-gradient(180deg,var(--card),#050303);border:2px solid var(--line);border-radius:20px;padding:13px;margin-bottom:13px;box-shadow:0 0 18px #0008}
+.title{text-align:center;color:#d7c2d6;font-weight:bold;font-size:13px;margin:0 0 10px}
+.mode{display:grid;grid-template-columns:1fr 1fr;gap:12px}.mode button,.action,.secondary{height:58px;border:2px solid var(--line);border-radius:16px;background:#030303;color:#fff;font-weight:bold;font-size:16px}.mode button.active{background:linear-gradient(135deg,var(--a),var(--a2));box-shadow:0 0 20px color-mix(in srgb,var(--a) 35%,transparent)}
+.drop{border:2px dashed var(--yellow);border-radius:19px;min-height:145px;display:grid;place-items:center;text-align:center;cursor:pointer}.drop strong{font-size:18px;color:var(--a)}.drop span{display:block;color:#bcaab8;font-size:12px;margin-top:9px}.file{font-size:11px;margin-top:10px;color:#ddd;word-break:break-all}input[type=file]{display:none}
+.grid4{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}.mini{height:92px;border:2px solid var(--line);border-radius:16px;background:#030303;display:grid;place-items:center;text-align:center}.mini b{font-size:11px;letter-spacing:2px;color:#cdb8c8}.mini span{font-size:22px;color:var(--yellow)}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}.action{background:linear-gradient(135deg,var(--a),var(--a2));font-size:15px}.secondary{font-size:15px}.action:disabled{opacity:.35}
+.progress{margin-top:15px;display:none}.bar{height:9px;border:1px solid var(--a);border-radius:20px;overflow:hidden;background:#21110b}.fill{height:100%;width:0;background:linear-gradient(90deg,var(--a),var(--yellow));transition:.2s}.pt{text-align:center;color:#bba9b7;font-size:11px;margin-top:8px}
+.controls{display:grid;grid-template-columns:1fr 105px;gap:10px}.input,.select{height:52px;width:100%;border:2px solid var(--line);border-radius:15px;background:#030303;color:#fff;padding:0 13px;outline:0}.new{width:100%;height:56px;border:0;border-radius:15px;background:linear-gradient(135deg,var(--a),var(--a2));color:#fff;font-weight:bold;font-size:15px;margin-top:11px}
+#results{display:none}.priority{display:flex;align-items:center;justify-content:space-between;margin:18px 3px 8px}.priority h2{margin:0;font-size:20px}.priority span{color:var(--a);font-weight:bold}
+.result{border:2px solid var(--line);border-radius:20px;background:#120804;padding:11px;margin-top:12px}.rhead{display:flex;align-items:center;justify-content:space-between;gap:7px}.name{font-size:18px;font-weight:900;direction:ltr;text-align:left}.badge{background:linear-gradient(135deg,var(--a),#ff7200);padding:8px 10px;border-radius:20px;font-size:10px;font-weight:bold}
+.code{margin-top:10px;border:2px solid var(--line);border-radius:15px;background:#000;color:#ffd85b;padding:14px;direction:ltr;text-align:left;font:13px/2 "Courier New",monospace;white-space:pre-wrap;overflow:auto}
+.meta{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}.box{min-height:84px;border:2px solid var(--line);border-radius:15px;background:#000;padding:10px}.box small{display:block;color:#bcaeb7;font-size:10px;font-weight:bold;margin-bottom:10px}.box strong{font-size:13px;line-height:1.7;word-break:break-word}
+.copy{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}.copy button{height:52px;border:2px solid var(--line);border-radius:15px;background:#050303;color:#fff;font-weight:bold}.copy button:last-child{background:linear-gradient(135deg,var(--a),var(--a2))}
+.empty{text-align:center;color:#806f80;padding:30px}.notice{text-align:center;color:#9f8d9d;font-size:11px;line-height:1.9}.foot{text-align:center;color:#62545f;font-size:10px;padding:12px}
+@media(max-width:390px){.app{padding-left:10px;padding-right:10px}.top{margin-left:-10px;margin-right:-10px}.gauge{width:175px;height:175px}}
+</style>
+</head>
+<body class="game-mode">
+<div class="app">
+  <div class="top"><div><b>PRECISION ENGINE</b><small>محرك التحليل الدقيق</small></div><div id="pill" class="pill">🎮 لعبة</div></div>
+  <section class="hero">
+    <div id="gauge" class="gauge" style="--deg:0deg;--needle:0deg"><div id="gval" class="gval">0%</div><div class="glabel">PRECISION</div></div>
+    <h1>PRECISION ENGINE</h1><p id="subtitle">تحليل الألعاب</p>
+  </section>
+
+  <section class="card"><div class="title">نوع التحليل</div><div class="mode">
+    <button id="game" class="active" onclick="mode('game')">لعبة 🎮</button>
+    <button id="app" onclick="mode('app')">تطبيق 📱</button>
+  </div></section>
+
+  <section class="card">
+    <label class="drop" for="file"><div><strong>＋ اختيار APK</strong><span>اضغط أو اسحب الملف هنا</span><div id="fname" class="file">لم يتم اختيار ملف</div></div></label>
+    <input id="file" type="file" accept=".apk,.apks" onchange="picked(this)">
+    <div class="grid4"><div class="mini"><div><b>METHODS</b><span>▣</span></div></div><div class="mini"><div><b>DEX</b><span>▣</span></div></div><div class="mini"><div><b>PRIORITY</b><span>▣</span></div></div><div class="mini"><div><b>STRINGS</b><span>▣</span></div></div></div>
+    <div class="actions"><button id="go" class="action" disabled onclick="analyze()">بدء التحليل 🔍</button><button class="secondary" onclick="resetAll()">مسح ↻</button></div>
+    <div id="progress" class="progress"><div class="bar"><div id="fill" class="fill"></div></div><div id="pt" class="pt">تجهيز التحليل...</div></div>
+  </section>
+
+  <section id="results" class="card">
+    <div class="controls"><input id="q" class="input" placeholder="🔎 بحث" oninput="render()"><select id="sort" class="select" onchange="render()"><option value="high">الأعلى</option><option value="low">الأدنى</option></select></div>
+    <button class="new" onclick="analyze()">⟳ جديد</button>
+    <div class="priority"><h2>⚡ الأولوية</h2><span id="count">0</span></div>
+    <div id="list"></div>
+  </section>
+
+  <section class="card"><div class="title">معلومات</div><div class="notice">التحليل هنا يتم على APK/APKS الذي يرفعه المستخدم إلى خادم التحليل، ويبحث في DEX وMETHODS وSTRINGS عن مؤشرات الشراء والفوترة. النسبة ترتيب تحليلي وليست إثباتاً قانونياً أو تجارياً.</div></section>
+  <div class="foot">PRECISION ENGINE • APK Analyzer</div>
+</div>
+
+<script>
+const API_URL='https://YOUR-RENDER-SERVICE.onrender.com/api/analyze';
+let selected=null, current='game', data=[];
+const $=id=>document.getElementById(id);
+
+function mode(m){current=m;document.body.className=m+'-mode';$('game').classList.toggle('active',m==='game');$('app').classList.toggle('active',m==='app');$('pill').textContent=m==='game'?'🎮 لعبة':'📱 تطبيق';$('subtitle').textContent=m==='game'?'تحليل الألعاب':'تحليل التطبيقات';resetResults();}
+function picked(i){selected=i.files?.[0]||null;$('fname').textContent=selected?selected.name:'لم يتم اختيار ملف';$('go').disabled=!selected}
+async function analyze(){
+ if(!selected)return;
+ $('progress').style.display='block';$('results').style.display='none';
+ let p=0;const timer=setInterval(()=>{p=Math.min(88,p+7);progress(p,p<30?'فتح الملف...':p<55?'فحص DEX...':p<75?'تحليل METHODS وSTRINGS...':'ترتيب الأولوية...')},250);
+ try{
+   const fd=new FormData();fd.append('file',selected);fd.append('mode',current);
+   const r=await fetch(API_URL,{method:'POST',body:fd});if(!r.ok)throw new Error('HTTP '+r.status);
+   const j=await r.json();clearInterval(timer);progress(100,'اكتمل التحليل');data=j.results||[];render();$('results').style.display='block';
+ }catch(e){clearInterval(timer);$('progress').style.display='none';alert('تعذر التحليل: '+(e.message||'تحقق من الخادم والملف.'))}
+}
+function progress(p,t){$('fill').style.width=p+'%';$('pt').textContent=t;$('gval').textContent=p+'%';$('gauge').style.setProperty('--deg',(p*3.6)+'deg');$('gauge').style.setProperty('--needle',(p*1.8)+'deg')}
+function render(){
+ let q=($('q').value||'').toLowerCase().trim(),s=$('sort').value;
+ let a=data.filter(x=>!q||JSON.stringify(x).toLowerCase().includes(q)).sort((x,y)=>s==='high'?y.percent-x.percent:x.percent-y.percent);
+ $('count').textContent=a.length;
+ $('list').innerHTML=a.length?a.map(x=>`<article class="result">
+ <div class="rhead"><div class="name">${esc(x.name)}</div><div class="badge">⭐ ${esc(x.category)} • ${x.percent}%</div></div>
+ <div class="code">${esc(x.code||x.signature||'')}</div>
+ <div class="meta">
+  <div class="box"><small>التصنيف</small><strong>${esc(x.category)}</strong></div>
+  <div class="box"><small>CLASS</small><strong dir="ltr">${esc(x.class_name||'—')}</strong></div>
+  <div class="box"><small>المصدر</small><strong>${esc(x.source||'—')}</strong></div>
+  <div class="box"><small>RETURN</small><strong dir="ltr">${esc(x.return_type||'—')}</strong></div>
+ </div>
+ <div class="copy"><button onclick='copyText(${JSON.stringify(x.code||x.signature||"")})'>📋 نسخ الدالة</button><button onclick='copyText(${JSON.stringify((x.code||"")+"\\n"+(x.class_name||""))})'>نسخ الدليل ⧉</button></div>
+ </article>`).join(''):'<div class="empty">لا توجد نتائج</div>';
+}
+function copyText(t){navigator.clipboard?.writeText(t).then(()=>alert('تم النسخ')).catch(()=>alert('تعذر النسخ'))}
+function resetResults(){data=[];$('results').style.display='none';$('q').value='';progress(0,'تجهيز التحليل...');$('progress').style.display='none'}
+function resetAll(){selected=null;$('file').value='';$('fname').textContent='لم يتم اختيار ملف';$('go').disabled=true;resetResults()}
+function esc(v){return String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;')}
+</script>
+</body>
+</html>
