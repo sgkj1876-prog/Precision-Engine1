@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: precision-engine
+    runtime: python
+    plan: free
+    buildCommand: pip install -r precision_engine/requirements.txt
+    startCommand: gunicorn --chdir precision_engine server:app
+    envVars:
+      - key: MAX_UPLOAD_MB
+        value: "35"
